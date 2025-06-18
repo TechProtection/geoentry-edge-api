@@ -45,6 +45,7 @@ class LocationRepository:
                         "longitude": loc["longitude"],
                         "radius": loc["radius"],
                         "profile_id": loc["profile_id"],
+                        "created_at": datetime.now()
                     }
                 )
                 locations.append(Location(
@@ -76,6 +77,7 @@ class LocationRepository:
                             "longitude": loc_data["longitude"],
                             "radius": loc_data["radius"],
                             "profile_id": loc_data["profile_id"],
+                            "created_at": loc_data.get("created_at", datetime.now())
                         }
                     )
                     locations.append(Location(

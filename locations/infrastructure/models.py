@@ -1,6 +1,8 @@
 """Peewee models for Locations context."""
 from peewee import Model, CharField, FloatField, DateTimeField
 from shared.infrastructure.database import db
+from datetime import datetime
+
 
 
 class Location(Model):
@@ -11,7 +13,7 @@ class Location(Model):
     longitude = FloatField()
     radius = FloatField()
     profile_id = CharField()
-    created_at = DateTimeField()
+    created_at = DateTimeField(default=datetime.now)
 
     class Meta:
         database = db
