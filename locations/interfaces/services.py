@@ -9,7 +9,132 @@ location_service = LocationApplicationService()
 
 @location_api.route("/api/v1/locations/proximity-check", methods=["POST"])
 def proximity_check():
-    """Check proximity to all locations for authenticated device."""
+    """Verificar proximidad a todas las ubicaciones configuradas para el dispositivo autenticado.
+    ---
+    tags:
+      - Locations
+    security:
+      - DeviceAuth: []
+      - ApiKeyAuth: []
+    parameters:
+      - name: X-Device-ID
+        in: header
+        type: string
+        required: true
+        description: ID único del dispositivo IoT
+        example: "smart-band-001"
+      - name: X-API-Key
+        in: header
+        type: string
+        required: true
+        description: Clave API del dispositivo
+        example: "test-api-key-123"
+      - name: position
+        in: body
+        required: true
+        description: Coordenadas actuales del dispositivo
+        schema:
+          type: object
+          required:
+            - latitude
+            - longitude
+          properties:
+            latitude:
+              type: number
+              format: float
+              description: Latitud en grados decimales
+              example: -12.12345
+              minimum: -90
+              maximum: 90
+            longitude:
+              type: number
+              format: float
+              description: Longitud en grados decimales
+              example: -77.54321
+              minimum: -180
+              maximum: 180
+    responses:
+      200:
+        description: Verificación de proximidad exitosa
+        schema:
+          type: object
+          properties:
+            device_id:
+              type: string
+              example: "smart-band-001"
+            current_position:
+              type: object
+              properties:
+                latitude:
+                  type: number
+                  example: -12.12345
+                longitude:
+                  type: number
+                  example: -77.54321
+            proximity_results:
+              type: array
+              items:
+                type: object
+                properties:
+                  location_id:
+                    type: string
+                    example: "home-loc"
+                  location_name:
+                    type: string
+                    example: "Casa"
+                  distance:
+                    type: number
+                    format: float
+                    example: 123.45
+                    description: "Distancia en metros"
+                  within_radius:
+                    type: boolean
+                    example: true
+                  event_type:
+                    type: string
+                    enum: ["ENTER", "EXIT", "STAY"]
+                    example: "ENTER"
+      400:
+        description: Datos inválidos o faltantes
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Missing required field: latitude"
+      401:
+        description: Headers de autenticación faltantes
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Missing authentication headers"
+      403:
+        description: Credenciales del dispositivo inválidas
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Invalid device credentials"
+      404:
+        description: Dispositivo no encontrado
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Device not found"
+      500:
+        description: Error interno del servidor
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Internal server error"
+    """
     # Autenticación
     auth_result = authenticate_request()
     if auth_result:
