@@ -6,7 +6,8 @@ from peewee import DoesNotExist
 from devices.domain.entities import Device
 from devices.infrastructure.models import Device as DeviceModel
 
-BACKEND_URL = "http://localhost:3000/api"  # URL de tu backend
+BACKEND_URL = "https://geoentry-rest-api.onrender.com/api"  # URL de tu backend
+# BACKEND_URL = "https://localhost:3000/api"  # URL de tu backend
 
 class DeviceRepository:
     """Repository for device operations."""

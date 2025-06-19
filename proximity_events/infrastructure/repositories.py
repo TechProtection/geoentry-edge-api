@@ -3,7 +3,8 @@ import requests
 from proximity_events.domain.entities import ProximityEvent
 from proximity_events.infrastructure.models import ProximityEvent as ProximityEventModel
 
-BACKEND_URL = "http://localhost:3000/api"
+BACKEND_URL = "https://geoentry-rest-api.onrender.com/api"  # URL de tu backend
+# BACKEND_URL = "https://localhost:3000/api"  # URL de tu backend
 
 class ProximityEventRepository:
     """Repository for proximity event operations."""

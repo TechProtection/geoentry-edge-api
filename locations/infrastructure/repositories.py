@@ -5,7 +5,8 @@ from datetime import datetime
 from locations.domain.entities import Location
 from locations.infrastructure.models import Location as LocationModel
 
-BACKEND_URL = "http://localhost:3000/api"
+BACKEND_URL = "https://geoentry-rest-api.onrender.com/api"  # URL de tu backend
+# BACKEND_URL = "https://localhost:3000/api"  # URL de tu backend
 
 class LocationRepository:
     """Repository for location operations with test stubs."""

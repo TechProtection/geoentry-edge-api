@@ -1,8 +1,12 @@
 """Database initialization for GeoEntry Edge API."""
 from peewee import SqliteDatabase
+from config import get_config
+
+# Get configuration
+config = get_config()
 
 # Initialize SQLite database
-db = SqliteDatabase('geoentry.db')
+db = SqliteDatabase(config.DATABASE_URL)
 
 def init_db() -> None:
     """Initialize database and create tables."""
