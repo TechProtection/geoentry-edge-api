@@ -44,7 +44,6 @@ swagger_template = {
     },
     "host":"geoentry-rest-api.onrender.com/api",
     "basePath": "/",
-    "schemes": ["http", "https"],
     "securityDefinitions": {
         "DeviceAuth": {
             "type": "apiKey",
