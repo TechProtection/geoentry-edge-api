@@ -14,7 +14,7 @@ class Config:
     PORT = int(os.environ.get('PORT', 5000))
     
     # API configuration
-    API_BASE_URL = os.environ.get('API_BASE_URL', 'http://localhost:8080')
+    API_BASE_URL = os.environ.get('API_BASE_URL', 'https://geoentry-rest-api.onrender.com/api')
     
 class DevelopmentConfig(Config):
     """Development configuration."""
