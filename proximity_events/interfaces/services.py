@@ -150,3 +150,188 @@ def handle_proximity_event():
         return jsonify({"error": f"Missing required field: {str(e)}"}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@proximity_event_api.route("/api/v1/proximity-events", methods=["GET"])
+def get_all_proximity_events():
+    """Obtener todos los eventos de proximidad del sistema.
+    ---
+    tags:
+      - Proximity Events
+    parameters:
+      - name: limit
+        in: query
+        type: integer
+        description: Número máximo de eventos a retornar
+        default: 100
+        minimum: 1
+        maximum: 1000
+    responses:
+      200:
+        description: Lista de eventos obtenida exitosamente
+        schema:
+          type: object
+          properties:
+            total_count:
+              type: integer
+              example: 15
+              description: "Número total de eventos retornados"
+            events:
+              type: array
+              items:
+                type: object
+                properties:
+                  event_id:
+                    type: string
+                    example: "evt-123456789"
+                  device_id:
+                    type: string
+                    example: "smart-band-001"
+                  location_id:
+                    type: string
+                    example: "home-loc"
+                  event_type:
+                    type: string
+                    enum: ["ENTER", "EXIT", "STAY"]
+                    example: "ENTER"
+                  distance:
+                    type: number
+                    format: float
+                    example: 45.67
+                    description: "Distancia en metros"
+                  latitude:
+                    type: number
+                    format: float
+                    example: -12.12345
+                  longitude:
+                    type: number
+                    format: float
+                    example: -77.54321
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: "2025-06-19T10:30:00Z"
+      500:
+        description: Error interno del servidor
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Internal server error"
+    """
+    try:
+        # Obtener parámetro limit (opcional)
+        limit = request.args.get('limit', 100, type=int)
+        limit = max(1, min(limit, 1000))  # Validar límites
+        
+        # Obtener todos los eventos
+        events = event_service.get_all_events(limit)
+        
+        events_data = []
+        for event in events:
+            events_data.append({
+                "event_id": event.event_id,
+                "device_id": event.device_id,
+                "location_id": event.location_id,
+                "event_type": event.event_type,
+                "distance": event.distance,
+                "latitude": event.latitude,
+                "longitude": event.longitude,
+                "created_at": event.created_at.isoformat() if event.created_at else None
+            })
+
+        return jsonify({
+            "total_count": len(events_data),
+            "events": events_data
+        }), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@proximity_event_api.route("/api/v1/proximity-events/<event_id>", methods=["GET"])
+def get_proximity_event_by_id(event_id):
+    """Obtener un evento de proximidad específico por ID (sin autenticación).
+    ---
+    tags:
+      - Proximity Events
+    parameters:
+      - name: event_id
+        in: path
+        type: string
+        required: true
+        description: ID único del evento de proximidad
+        example: "evt-123456789"
+    responses:
+      200:
+        description: Evento de proximidad obtenido exitosamente
+        schema:
+          type: object
+          properties:
+            event_id:
+              type: string
+              example: "evt-123456789"
+            device_id:
+              type: string
+              example: "smart-band-001"
+            location_id:
+              type: string
+              example: "home-loc"
+            event_type:
+              type: string
+              enum: ["ENTER", "EXIT", "STAY"]
+              example: "ENTER"
+            distance:
+              type: number
+              format: float
+              example: 123.45
+            latitude:
+              type: number
+              format: float
+              example: -12.12345
+            longitude:
+              type: number
+              format: float
+              example: -77.54321
+            created_at:
+              type: string
+              format: date-time
+              example: "2025-06-19T10:30:00Z"
+      404:
+        description: Evento no encontrado
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Event not found"
+      500:
+        description: Error interno del servidor
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Internal server error"
+    """
+    try:
+        # Obtener evento específico sin autenticación
+        event = event_service.get_event_by_id(event_id)
+        
+        if not event:
+            return jsonify({"error": "Event not found"}), 404
+
+        return jsonify({
+            "event_id": event.event_id,
+            "device_id": event.device_id,
+            "location_id": event.location_id,
+            "event_type": event.event_type,
+            "distance": event.distance,
+            "latitude": event.latitude,
+            "longitude": event.longitude,
+            "created_at": event.created_at.isoformat() if event.created_at else None
+        }), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

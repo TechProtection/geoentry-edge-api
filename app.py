@@ -42,7 +42,6 @@ swagger_template = {
             "email": "support@geoentry.com"
         }
     },
-    "host":"geoentry-rest-api.onrender.com/api",
     "basePath": "/",
     "securityDefinitions": {
         "DeviceAuth": {

@@ -169,3 +169,79 @@ def proximity_check():
         return jsonify({"error": f"Missing required field: {str(e)}"}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@location_api.route("/api/v1/locations", methods=["GET"])
+def get_all_locations():
+    """Obtener todas las ubicaciones disponibles en el sistema.
+    ---
+    tags:
+      - Locations
+    responses:
+      200:
+        description: Lista de todas las ubicaciones obtenida exitosamente
+        schema:
+          type: object
+          properties:
+            total_count:
+              type: integer
+              example: 2
+              description: "Número total de ubicaciones"
+            locations:
+              type: array
+              items:
+                type: object
+                properties:
+                  location_id:
+                    type: string
+                    example: "home-loc"
+                  name:
+                    type: string
+                    example: "Casa"
+                  latitude:
+                    type: number
+                    format: float
+                    example: -12.1234
+                  longitude:
+                    type: number
+                    format: float
+                    example: -77.5432
+                  radius:
+                    type: number
+                    format: float
+                    example: 100.0
+                    description: "Radio en metros"
+                  profile_id:
+                    type: string
+                    example: "test-profile"
+      500:
+        description: Error interno del servidor
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Internal server error"
+    """
+    try:
+        # Obtener todas las ubicaciones sin filtros
+        locations = location_service.repository.get_all_locations()
+        
+        locations_data = []
+        for location in locations:
+            locations_data.append({
+                "location_id": location.location_id,
+                "name": location.name,
+                "latitude": location.latitude,
+                "longitude": location.longitude,
+                "radius": location.radius,
+                "profile_id": location.profile_id
+            })
+
+        return jsonify({
+            "total_count": len(locations_data),
+            "locations": locations_data
+        }), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

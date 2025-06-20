@@ -71,6 +71,14 @@ La aplicación estará disponible en `http://localhost:5000`
 GET /
 ```
 
+### Obtener Ubicaciones
+```
+GET /api/v1/locations
+Headers:
+  X-Device-ID: smart-band-001
+  X-API-Key: test-api-key-123
+```
+
 ### Verificar Proximidad
 ```
 POST /api/v1/locations/proximity-check
@@ -84,6 +92,25 @@ Body:
   "latitude": -12.12345,
   "longitude": -77.54321
 }
+```
+
+### Obtener Eventos de Proximidad
+```
+GET /api/v1/proximity-events
+Headers:
+  X-Device-ID: smart-band-001
+  X-API-Key: test-api-key-123
+
+Query Parameters:
+  limit: 50 (opcional)
+```
+
+### Obtener Evento Específico
+```
+GET /api/v1/proximity-events/{event_id}
+Headers:
+  X-Device-ID: smart-band-001
+  X-API-Key: test-api-key-123
 ```
 
 ### Manejar Eventos de Proximidad
