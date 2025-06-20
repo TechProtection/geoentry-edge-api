@@ -42,7 +42,7 @@ swagger_template = {
             "email": "support@geoentry.com"
         }
     },
-    "host":"https://geoentry-rest-api.onrender.com/api" ,
+    "host":"geoentry-rest-api.onrender.com/api",
     "basePath": "/",
     "schemes": ["http", "https"],
     "securityDefinitions": {
