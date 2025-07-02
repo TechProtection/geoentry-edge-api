@@ -1,18 +1,17 @@
-"""Database initialization for GeoEntry Edge API."""
-from peewee import SqliteDatabase
-from config import get_config
+"""Database initialization for GeoEntry Edge API with Supabase."""
+from shared.supabase.client import get_supabase_client
 
-# Get configuration
-config = get_config()
-
-# Initialize SQLite database
-db = SqliteDatabase(config.DATABASE_URL)
-
-def init_db() -> None:
-    """Initialize database and create tables."""
-    db.connect()
-    from devices.infrastructure.models import Device
-    from locations.infrastructure.models import Location
-    from proximity_events.infrastructure.models import ProximityEvent
-    db.create_tables([Device, Location, ProximityEvent], safe=True)
-    db.close()
+def init_db() -> bool:
+    """Initialize connection to Supabase."""
+    # With Supabase, tables are already created via migrations
+    # This function now just ensures we can connect
+    client = get_supabase_client()
+    
+    # Test connection by making a simple query
+    try:
+        response = client.table('profiles').select('id').limit(1).execute()
+        print("✅ Supabase connection successful")
+        return True
+    except Exception as e:
+        print(f"❌ Supabase connection failed: {e}")
+        return False

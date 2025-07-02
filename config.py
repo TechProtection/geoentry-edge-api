@@ -5,8 +5,9 @@ import os
 class Config:
     """Base configuration class."""
     
-    # Database configuration
-    DATABASE_URL = os.environ.get('DATABASE_URL', 'geoentry.db')
+    # Supabase configuration
+    SUPABASE_URL = os.environ.get('SUPABASE_URL', 'https://njrccrvfsnmvnbwvlvey.supabase.co')
+    SUPABASE_KEY = os.environ.get('SUPABASE_KEY', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5qcmNjcnZmc25tdm5id3ZsdmV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcxNTQ4NjEsImV4cCI6MjA2MjczMDg2MX0.BsxMyKpmDqcxgMVkJeLNT0JAKj5epWTJnUOZx6auPmU')
     
     # Flask configuration
     DEBUG = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
@@ -17,13 +18,10 @@ class Config:
 class DevelopmentConfig(Config):
     """Development configuration."""
     DEBUG = True
-    DATABASE_URL = 'geoentry.db'
 
 class ProductionConfig(Config):
     """Production configuration."""
     DEBUG = False
-    # In production, we'll use SQLite but could be extended for PostgreSQL
-    DATABASE_URL = os.environ.get('DATABASE_URL', '/opt/render/project/src/geoentry.db')
 
 def get_config():
     """Get configuration based on environment."""

@@ -82,10 +82,8 @@ app.register_blueprint(device_api)
 app.register_blueprint(location_api)
 app.register_blueprint(proximity_event_api)
 
-@app.before_request
-def initialize():
-    """Initialize database on first request."""
-    init_db()
+# Test Supabase connection at startup
+init_db()
 
 @app.route('/')
 def health_check():
