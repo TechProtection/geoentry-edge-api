@@ -1,5 +1,6 @@
 """Interface services for Proximity Events context."""
 from flask import Blueprint, request, jsonify
+from datetime import datetime
 from proximity_events.application.services import ProximityEventApplicationService
 from devices.interfaces.services import authenticate_device
 
@@ -199,6 +200,106 @@ def get_events_by_location(location_id):
         limit = int(request.args.get('limit', 100))
         events = event_service.get_events_by_location(location_id, limit)
         return jsonify([event.to_dict() for event in events]), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@proximity_event_api.route("/api/v1/proximity-events/device/<device_id>/pending", methods=["GET"])
+def get_pending_events(device_id):
+    """Obtener eventos pendientes para un dispositivo específico.
+    ---
+    tags:
+      - Proximity Events
+    parameters:
+      - name: device_id
+        in: path
+        type: string
+        required: true
+        description: ID del dispositivo
+      - name: X-Device-ID
+        in: header
+        type: string 
+        required: true
+        description: ID de autenticación del dispositivo
+    responses:
+      200:
+        description: Eventos pendientes encontrados
+      204:
+        description: No hay eventos pendientes
+      401:
+        description: Autenticación requerida
+      404:
+        description: Dispositivo no encontrado
+    """
+    try:
+        # Verificar autenticación
+        auth_device_id = request.headers.get("X-Device-ID")
+        if not auth_device_id or auth_device_id != device_id:
+            return jsonify({"error": "Invalid device authentication"}), 401
+        
+        # Obtener eventos pendientes (simulado - en una implementación real usarías la base de datos)
+        # Por ahora retornamos 204 (no content) para indicar que no hay eventos pendientes
+        return "", 204
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@proximity_event_api.route("/api/v1/proximity-events/<event_id>/confirm", methods=["PATCH"])
+def confirm_event(event_id):
+    """Confirmar que un evento fue procesado por el dispositivo.
+    ---
+    tags:
+      - Proximity Events
+    parameters:
+      - name: event_id
+        in: path
+        type: string
+        required: true
+        description: ID del evento a confirmar
+      - name: X-Device-ID
+        in: header
+        type: string
+        required: true
+        description: ID del dispositivo
+      - in: body
+        name: confirmation_data
+        schema:
+          type: object
+          properties:
+            event_id:
+              type: string
+            device_status:
+              type: string
+            action_taken:
+              type: string
+            timestamp:
+              type: number
+    responses:
+      200:
+        description: Evento confirmado exitosamente
+      404:
+        description: Evento no encontrado
+      401:
+        description: Autenticación requerida
+    """
+    try:
+        data = request.get_json()
+        device_id = request.headers.get("X-Device-ID")
+        
+        if not device_id:
+            return jsonify({"error": "X-Device-ID header required"}), 401
+        
+        # Aquí se actualizaría el evento en la base de datos
+        # Por ahora solo retornamos confirmación
+        
+        return jsonify({
+            "event_id": event_id,
+            "device_id": device_id,
+            "status": "confirmed",
+            "timestamp": datetime.now().isoformat()
+        }), 200
+        
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

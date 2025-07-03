@@ -109,7 +109,7 @@ def get_devices_by_profile(profile_id):
         return jsonify({"error": str(e)}), 500
 
 
-@device_api.route('/devices/<device_id>', methods=['PUT'])
+@device_api.route('/devices/<device_id>', methods=['PATCH'])
 def update_device(device_id):
     """Update device information.
     ---

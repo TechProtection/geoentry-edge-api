@@ -205,7 +205,7 @@ def proximity_check():
         return jsonify({"error": str(e)}), 500
 
 
-@location_api.route("/api/v1/locations/<location_id>", methods=["PUT"])
+@location_api.route("/api/v1/locations/<location_id>", methods=["PATCH"])
 def update_location(location_id):
     """Update location information.
     ---
