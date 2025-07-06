@@ -6,6 +6,7 @@ from flasgger import Swagger
 from devices.interfaces.services import device_api
 from locations.interfaces.services import location_api
 from proximity_events.interfaces.services import proximity_event_api
+from sensors.interfaces.services import sensor_api
 from shared.infrastructure.database import init_db
 from config import get_config
 
@@ -72,6 +73,10 @@ swagger_template = {
         {
             "name": "Proximity Events", 
             "description": "Manejo de eventos de proximidad"
+        },
+        {
+            "name": "Sensors",
+            "description": "Gestión de sensores y dispositivos inteligentes"
         }
     ]
 }
@@ -81,6 +86,7 @@ swagger = Swagger(app, config=swagger_config, template=swagger_template)
 app.register_blueprint(device_api)
 app.register_blueprint(location_api)
 app.register_blueprint(proximity_event_api)
+app.register_blueprint(sensor_api)
 
 # Test Supabase connection at startup
 init_db()
